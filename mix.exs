@@ -9,26 +9,31 @@ defmodule Hierarch.MixProject do
       app: :hierarch,
       version: @version,
       elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env() == :prod,
       source_url: @project_url,
       homepage_url: @project_url,
       description: description(),
       package: package(),
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    [extra_applications: application(Mix.env)]
   end
+  defp application(:test), do: [:postgrex, :ecto, :logger]
+  defp application(_), do: [:logger]
 
-  # Run "mix help deps" to learn about dependencies.
+  defp elixirc_paths(:test), do: elixirc_paths() ++ ["test/support"]
+  defp elixirc_paths(_),     do: elixirc_paths()
+  defp elixirc_paths,        do: ["lib"]
+
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
+      {:ecto, ">= 2.0.0"},
+      {:postgrex, ">= 0.13.0"}
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
   end
@@ -43,6 +48,12 @@ defmodule Hierarch.MixProject do
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       licenses: ["MIT"],
       links: %{"GitHub" => @project_url}
+    ]
+  end
+
+  defp aliases do
+    [
+      "test": ["ecto.create --quite", "ecto.migrate --quite", "test"]
     ]
   end
 end
