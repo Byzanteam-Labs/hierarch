@@ -9,4 +9,5 @@ config :hierarch, Dummy.Repo,
   password: System.get_env("POSTGRES_PASSWORD") || "posgtres",
   database: "hierarch_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  types: Hierarch.Postgrex.Types
