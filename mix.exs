@@ -53,7 +53,7 @@ defmodule Hierarch.MixProject do
 
   defp aliases do
     [
-      "test": ["ecto.create --quite", "ecto.migrate --quite", "test"]
+      "test": ["ecto.drop --quite", "ecto.create --quite", "ecto.migrate --quite", "test"]
     ]
   end
 end
