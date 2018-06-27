@@ -11,7 +11,7 @@ defmodule Hierarch.AncestorsTest do
     {:ok, catelogs}
   end
 
-  describe "ancestors/1" do
+  describe "ancestors/2" do
     test "returns its ancestors", catelogs do
       top       = Map.get(catelogs, "Top")
       science   = Map.get(catelogs, "Top.Science")
@@ -33,14 +33,14 @@ defmodule Hierarch.AncestorsTest do
     end
   end
 
-  describe "ancestors_and_self/1" do
+  describe "ancestors/2 with_self" do
     test "returns its ancestors and itself", catelogs do
       top       = Map.get(catelogs, "Top")
       science   = Map.get(catelogs, "Top.Science")
       astronomy = Map.get(catelogs, "Top.Science.Astronomy")
 
       ancestors = astronomy
-                  |> Catelog.ancestors_and_self
+                  |> Catelog.ancestors(with_self: true)
                   |> Repo.all
       assert ancestors == [top, science, astronomy]
     end
@@ -49,7 +49,7 @@ defmodule Hierarch.AncestorsTest do
       top = Map.get(catelogs, "Top")
 
       ancestors = top
-                  |> Catelog.ancestors_and_self
+                  |> Catelog.ancestors(with_self: true)
                   |> Repo.all
       assert ancestors == [top]
     end

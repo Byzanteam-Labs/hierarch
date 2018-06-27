@@ -57,32 +57,30 @@ defmodule Hierarch do
       @doc """
       Return query expressions for ancestors
       """
-      def ancestors(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) when length(labels) <= 1, do: blank_query()
-      def ancestors(schema = %{__struct__: __MODULE__}) do
-        parent_labels = schema
-                        |> get_ltree_value()
-                        |> LTree.parent()
-                        |> LTree.dump()
+      def ancestors(schema = %{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}, opts \\ [with_self: false]) do
+        parent_labels =
+          case {length(labels), opts[:with_self]} do
+            {_, true} ->
+              schema
+              |> get_ltree_value()
+              |> LTree.dump()
+            {1, false} ->
+              nil
+            _ ->
+              schema
+              |> get_ltree_value()
+              |> LTree.parent()
+              |> LTree.dump()
+          end
 
-        from(
-          t in unquote(definition),
-          where: fragment("path @> ?", ^parent_labels)
-        )
-      end
-
-      @doc """
-      Return query expressions for ancestors and itself
-      """
-      def ancestors_and_self(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) when length(labels) < 1, do: blank_query()
-      def ancestors_and_self(schema = %{__struct__: __MODULE__}) do
-        parent_labels = schema
-                        |> get_ltree_value()
-                        |> LTree.dump()
-
-        from(
-          t in unquote(definition),
-          where: fragment("path @> ?", ^parent_labels)
-        )
+        if parent_labels do
+          from(
+            t in unquote(definition),
+            where: fragment("path @> ?", ^parent_labels)
+          )
+        else
+          blank_query()
+        end
       end
 
       @doc """
