@@ -1,7 +1,7 @@
 defmodule Hierarch.TestCase do
   use ExUnit.CaseTemplate
 
-  defmacro __using__(opts) do
+  using(opts) do
     quote do
       use ExUnit.Case, unquote(opts)
       alias Dummy.{Repo, Catelog}
@@ -24,7 +24,7 @@ defmodule Hierarch.TestCase do
         ]
 
         Enum.reduce(catelogs_list, %{}, fn (labels_str, acc) ->
-          catelog = %Catelog{name: labels_str, path: Hierarch.LTree.cast(labels_str)} |> Repo.insert!()
+          catelog = %Catelog{name: labels_str, path: Hierarch.LTree.cast(labels_str)} |> Repo.insert!
           Map.put acc, labels_str, catelog
         end)
       end
@@ -32,11 +32,10 @@ defmodule Hierarch.TestCase do
   end
 
   setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Dummy.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(Dummy.Repo, {:shared, self()})
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Dummy.Repo)
   end
 end
 
-{:ok, _pid} = Dummy.Repo.start_link
-
+{:ok, _} = Dummy.Repo.start_link
 ExUnit.start()
