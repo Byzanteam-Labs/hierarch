@@ -56,6 +56,10 @@ defmodule Hierarch do
 
       @doc """
       Return query expressions for ancestors
+
+      ## Options
+
+        * `:with_self` - when true to include itself. Defaults to false.
       """
       def ancestors(schema = %{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}, opts \\ [with_self: false]) do
         parent_labels =
@@ -85,6 +89,9 @@ defmodule Hierarch do
 
       @doc """
       Return query expressions for children
+      ## Options
+
+        * `:with_self` - when true to include itself. Defaults to false.
       """
       def children(schema = %{__struct__: __MODULE__}, opts \\ [with_self: false]) do
         labels = schema
