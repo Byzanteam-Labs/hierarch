@@ -36,4 +36,20 @@ defmodule Hierarch.LtreeTest do
       assert parent.labels == ["Top"]
     end
   end
+
+  describe "root" do
+    test "returns root ltree" do
+      ltree = %LTree{labels: ["Top", "Science"]}
+      parent = LTree.root(ltree)
+
+      assert parent.labels == ["Top"]
+    end
+
+    test "returns itself when root ltree" do
+      ltree = %LTree{labels: ["Top"]}
+      parent = LTree.root(ltree)
+
+      assert parent.labels == ["Top"]
+    end
+  end
 end

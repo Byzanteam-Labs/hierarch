@@ -36,4 +36,18 @@ defmodule Hierarch.LTree do
     |> List.delete_at(-1)
     |> LTree.cast()
   end
+
+  @doc """
+  Return the root of the current LTree
+  ## Examples
+
+      iex> ltree = %LTree{labels: ["Top", "Science"]}
+      iex> parent = LTree.root(ltree)
+      iex> parent.labels
+      ["Top"]
+  """
+  def root(%LTree{} = value) do
+    [head | _] = value.labels
+    LTree.cast(head)
+  end
 end
