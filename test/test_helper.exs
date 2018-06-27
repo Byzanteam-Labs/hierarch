@@ -23,10 +23,9 @@ defmodule Hierarch.TestCase do
           "Top.Collections.Pictures.Astronomy.Astronauts"
         ]
 
-        Enum.reduce(catelogs_list, %{}, fn (labels, acc) ->
-          name = labels |> String.split(".") |> List.last()
-          catelog = %Catelog{name: name, path: Hierarch.LTree.cast(labels)} |> Repo.insert!()
-          Map.put acc, name, catelog
+        Enum.reduce(catelogs_list, %{}, fn (labels_str, acc) ->
+          catelog = %Catelog{name: labels_str, path: Hierarch.LTree.cast(labels_str)} |> Repo.insert!()
+          Map.put acc, labels_str, catelog
         end)
       end
     end

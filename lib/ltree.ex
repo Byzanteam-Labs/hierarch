@@ -24,6 +24,12 @@ defmodule Hierarch.LTree do
 
   @doc """
   Return the parent of the current LTree
+  ## Examples
+
+      iex> ltree = %LTree{labels: ["Top", "Science"]}
+      iex> parent = LTree.parent(ltree)
+      iex> parent.labels
+      ["Top"]
   """
   def parent(%LTree{} = value) do
     value.labels
