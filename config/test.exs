@@ -11,3 +11,8 @@ config :hierarch, Dummy.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
   types: Hierarch.Postgrex.Types
+
+config :logger,
+  backends: [:console],
+  level: :warn,
+  compile_time_purge_level: :info
