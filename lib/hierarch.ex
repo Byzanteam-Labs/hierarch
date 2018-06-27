@@ -197,6 +197,16 @@ defmodule Hierarch do
         length(labels) == 1
       end
 
+      @doc """
+      Build child of a node
+      """
+      def build_child_of(schema, attrs \\ %{})
+      def build_child_of(schema = %{unquote(:"#{column_name}") => ltree, __struct__: __MODULE__}, attrs) do
+        path = LTree.cast(ltree.labels ++ [to_string(schema.id)])
+        node_attrs = Map.put(attrs, :path, path)
+        struct(__MODULE__, node_attrs)
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
