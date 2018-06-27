@@ -41,7 +41,6 @@ defmodule Hierarch do
       @doc """
       Return query expressions for the parent
       """
-      def parent(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) when length(labels) <= 1, do: blank_query()
       def parent(schema = %{__struct__: __MODULE__}) do
         parent_labels = schema
                         |> get_ltree_value()
