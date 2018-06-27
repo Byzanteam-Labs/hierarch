@@ -110,6 +110,30 @@ defmodule Hierarch do
         )
       end
 
+      @doc """
+      Return query expressions for discendants
+
+      ## Options
+
+        * `:with_self` - when true to include itself. Defaults to false.
+      """
+      def discendants(schema = %{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}, opts \\ [with_self: false]) do
+        labels = schema
+                 |> get_ltree_value()
+                 |> LTree.dump()
+
+        discendants_labels =
+          case opts[:with_self] do
+            true -> labels <> ".*{0,}"
+            _ -> labels <> ".*{1,}"
+          end
+
+        from(
+          t in unquote(definition),
+          where: fragment("path ~ ?", ^discendants_labels)
+        )
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
