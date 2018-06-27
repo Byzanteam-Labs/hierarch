@@ -134,6 +134,38 @@ defmodule Hierarch do
         )
       end
 
+      @doc """
+      Return query expressions for sblings
+
+      ## Options
+
+        * `:with_self` - when true to include itself. Defaults to false.
+      """
+      def sblings(schema = %{__struct__: __MODULE__}, opts \\ [with_self: false]) do
+        parent_labels = schema
+                        |> get_ltree_value()
+                        |> LTree.parent()
+                        |> LTree.dump()
+
+        sblings_labels = parent_labels <> ".*{1}"
+
+        if opts[:with_self] do
+          from(
+            t in unquote(definition),
+            where: fragment("path ~ ?", ^sblings_labels)
+          )
+        else
+          itself_labels = schema
+                          |> get_ltree_value()
+                          |> LTree.dump()
+          from(
+            t in unquote(definition),
+            where: fragment("path ~ ?", ^sblings_labels),
+            where: fragment("path <> ?", ^itself_labels)
+          )
+        end
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
