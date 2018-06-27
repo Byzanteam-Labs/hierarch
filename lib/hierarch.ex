@@ -166,6 +166,16 @@ defmodule Hierarch do
         end
       end
 
+      @doc """
+      Return query expressions for roots
+      """
+      def roots do
+        from(
+          t in unquote(definition),
+          where: fragment("path ~ ?", "*{1}")
+        )
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
