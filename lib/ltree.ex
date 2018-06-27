@@ -1,6 +1,7 @@
 defmodule Hierarch.LTree do
   @enforce_keys [:labels]
   defstruct [:labels]
+  alias Hierarch.LTree
 
   @separotor "."
 
@@ -17,7 +18,16 @@ defmodule Hierarch.LTree do
 
   def cast(_), do: :error
 
-  def dump(%Hierarch.LTree{} = value) do
+  def dump(%LTree{} = value) do
     Enum.join(value.labels, @separotor)
+  end
+
+  @doc """
+  Return the parent of the current LTree
+  """
+  def parent(%LTree{} = value) do
+    value.labels
+    |> List.delete_at(-1)
+    |> LTree.cast()
   end
 end
