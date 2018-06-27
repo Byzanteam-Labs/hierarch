@@ -190,6 +190,13 @@ defmodule Hierarch do
         )
       end
 
+      @doc """
+      Return true if the node is root
+      """
+      def is_root?(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) do
+        length(labels) == 1
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
