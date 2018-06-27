@@ -70,6 +70,21 @@ defmodule Hierarch do
         )
       end
 
+      @doc """
+      Return query expressions for ancestors and itself
+      """
+      def ancestors_and_self(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) when length(labels) < 1, do: blank_query()
+      def ancestors_and_self(schema = %{__struct__: __MODULE__}) do
+        parent_labels = schema
+                        |> get_ltree_value()
+                        |> LTree.dump()
+
+        from(
+          t in unquote(definition),
+          where: fragment("path @> ?", ^parent_labels)
+        )
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
