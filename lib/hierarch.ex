@@ -55,6 +55,21 @@ defmodule Hierarch do
       end
 
       @doc """
+      Return query expressions for the root
+      """
+      def root(schema = %{__struct__: __MODULE__}) do
+        root_labels = schema
+                      |> get_ltree_value()
+                      |> LTree.root()
+                      |> LTree.dump()
+
+        from(
+          t in unquote(definition),
+          where: fragment("path = ?", ^root_labels)
+        )
+      end
+
+      @doc """
       Return query expressions for ancestors
 
       ## Options
