@@ -85,6 +85,26 @@ defmodule Hierarch do
         )
       end
 
+      @doc """
+      Return query expressions for children
+      """
+      def children(schema = %{__struct__: __MODULE__}, opts \\ [with_self: false]) do
+        labels = schema
+                 |> get_ltree_value()
+                 |> LTree.dump()
+
+        children_labels =
+          case opts[:with_self] do
+            true -> labels <> ".*{,1}"
+            _ -> labels <> ".*{1}"
+          end
+
+        from(
+          t in unquote(definition),
+          where: fragment("path ~ ?", ^children_labels)
+        )
+      end
+
       defp get_ltree_value(schema) do
         Map.get(schema, unquote(:"#{column_name}"))
       end
