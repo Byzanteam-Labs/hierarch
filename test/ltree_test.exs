@@ -4,52 +4,42 @@ defmodule Hierarch.LtreeTest do
 
   doctest LTree
 
-  describe "cast" do
-    test "parses with bianry" do
-      assert LTree.cast("Top.Science") == %LTree{labels: ["Top", "Science"]}
+  describe "parent_id/2" do
+    test "returns parent_id" do
+      parent_id = LTree.parent_id("Top.Science")
+      assert parent_id == "Science"
     end
 
-    test "parses with list" do
-      assert LTree.cast(["Top", "Science"]) == %LTree{labels: ["Top", "Science"]}
+    test "returns nil for the root" do
+      parent_id = LTree.parent_id("")
+      assert parent_id == nil
     end
 
-    test "removes blank string item" do
-      assert LTree.cast("") == %LTree{labels: []}
-    end
-
-    test "falis with wrong value" do
-      assert LTree.cast(nil) == :error
-    end
-  end
-
-  describe "dump" do
-    test "dump to string" do
-      assert LTree.dump(%LTree{labels: ["Top", "Science"]}) == "Top.Science"
+    test "returns nil for the root without path" do
+      parent_id = LTree.parent_id(nil)
+      assert parent_id == nil
     end
   end
 
-  describe "parent" do
-    test "returns parent ltree" do
-      ltree = %LTree{labels: ["Top", "Science"]}
-      parent = LTree.parent(ltree)
+  describe "parent_path/1" do
+    test "returns the parent_path" do
+      assert Hierarch.LTree.parent_path("Top.Science.Astronomy") == "Top.Science"
+    end
 
-      assert parent.labels == ["Top"]
+    test "returns blank string" do
+      assert Hierarch.LTree.parent_path("Top") == ""
     end
   end
 
-  describe "root" do
-    test "returns root ltree" do
-      ltree = %LTree{labels: ["Top", "Science"]}
-      parent = LTree.root(ltree)
-
-      assert parent.labels == ["Top"]
+  describe "root/2" do
+    test "returns root_id" do
+      root_id = LTree.root_id("Top.Science", "Astronomy")
+      assert root_id == "Top"
     end
 
-    test "returns itself when root ltree" do
-      ltree = %LTree{labels: ["Top"]}
-      parent = LTree.root(ltree)
-
-      assert parent.labels == ["Top"]
+    test "returns itself if it is the root" do
+      root_id = LTree.root_id("", "Top")
+      assert root_id == "Top"
     end
   end
 end

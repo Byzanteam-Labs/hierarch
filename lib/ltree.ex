@@ -1,53 +1,83 @@
 defmodule Hierarch.LTree do
-  @enforce_keys [:labels]
-  defstruct [:labels]
-  alias Hierarch.LTree
+  @separator "."
 
-  @separotor "."
+  @doc """
+  Return the parent_id of the given ltree path
+  ## Examples
 
-  def cast(labels) when is_binary(labels) do
-    labels
-    |> String.split(@separotor)
-    |> Enum.reject(fn(label) -> label == "" end)
-    |> cast()
-  end
+      iex> LTree.parent_id("Top")
+      "Top"
+      iex> LTree.parent_id("")
+      nil
+      iex> LTree.parent_id("")
+      nil
+      iex> LTree.parent_id(nil)
+      nil
 
-  def cast(labels) when is_list(labels) do
-    struct(__MODULE__, labels: labels)
-  end
-
-  def cast(_), do: :error
-
-  def dump(%LTree{} = value) do
-    Enum.join(value.labels, @separotor)
+  ## Options:
+    * `current_pk- the primary key of the current schema
+  """
+  def parent_id(nil), do: nil
+  def parent_id(""), do: nil
+  def parent_id(path) when is_binary(path) do
+    path
+    |> split
+    |> List.last
   end
 
   @doc """
-  Return the parent of the current LTree
-  ## Examples
-
-      iex> ltree = %LTree{labels: ["Top", "Science"]}
-      iex> parent = LTree.parent(ltree)
-      iex> parent.labels
-      ["Top"]
+  Return parent path of the given path
   """
-  def parent(%LTree{} = value) do
-    value.labels
+  def parent_path(path) do
+    path
+    |> split
     |> List.delete_at(-1)
-    |> LTree.cast()
+    |> join
   end
 
   @doc """
-  Return the root of the current LTree
+  Return the root_id of the given ltree path
   ## Examples
 
-      iex> ltree = %LTree{labels: ["Top", "Science"]}
-      iex> parent = LTree.root(ltree)
-      iex> parent.labels
-      ["Top"]
+      iex> LTree.root_id("Top", "Science")
+      "Top"
+      iex> LTree.root_id("", "Top")
+      "Top"
+      iex> LTree.root_id(nil, "Top")
+      "Top"
+
+  ## Options:
+    * `current_pk- the primary key of the current schema
   """
-  def root(%LTree{} = value) do
-    [head | _] = value.labels
-    LTree.cast(head)
+  def root_id(nil, current_pk), do: current_pk
+  def root_id("", current_pk), do: current_pk
+  def root_id(path, _current_pk) do
+    path
+    |> split
+    |> List.first
+  end
+
+  @doc """
+  Split string path into an arry
+  """
+  def split(""), do: []
+  def split(path) when is_binary(path) do
+    String.split(path, @separator)
+  end
+
+  @doc """
+  Join list into a string path
+  """
+  def join(list) when is_list(list) do
+    Enum.join(list, @separator)
+  end
+
+  @doc """
+  Concat path or string
+  """
+  def concat(one, another) do
+    [one, another]
+    |> Enum.reject(fn(label) -> label == "" end)
+    |> join()
   end
 end

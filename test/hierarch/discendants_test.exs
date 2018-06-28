@@ -4,9 +4,9 @@ defmodule Hierarch.DiscendantsTest do
   setup_all do
     catelogs = create_catelogs()
 
-    on_exit fn ->
-      Repo.delete_all(Catelog)
-    end
+    # on_exit fn ->
+    #   Repo.delete_all(Catelog)
+    # end
 
     {:ok, catelogs}
   end

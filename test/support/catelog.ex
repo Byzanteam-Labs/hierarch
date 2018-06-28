@@ -7,7 +7,7 @@ defmodule Dummy.Catelog do
 
   schema "catelogs" do
     field :name, :string
-    field :path, Hierarch.Ecto.LTree
+    field :path, Hierarch.Ecto.UUIDLTree
 
     timestamps()
   end

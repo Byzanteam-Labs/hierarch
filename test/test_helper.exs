@@ -23,9 +23,12 @@ defmodule Hierarch.TestCase do
           "Top.Collections.Pictures.Astronomy.Astronauts"
         ]
 
-        Enum.reduce(catelogs_list, %{}, fn (labels_str, acc) ->
-          catelog = %Catelog{name: labels_str, path: Hierarch.LTree.cast(labels_str)} |> Repo.insert!
-          Map.put acc, labels_str, catelog
+        Enum.reduce(catelogs_list, %{}, fn (name, acc) ->
+          parent_name = Hierarch.LTree.parent_path(name)
+          parent = Map.get(acc, parent_name)
+
+          catelog = Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!
+          Map.put acc, name, catelog
         end)
       end
     end

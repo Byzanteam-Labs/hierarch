@@ -13,7 +13,7 @@ defmodule Hierarch do
 
         schema "catelogs" do
           field :name, :string
-          field :path, Hierarch.Ecto.LTree
+          field :path, Hierarch.Ecto.UUIDLTree
 
           timestamps()
         end
@@ -23,48 +23,51 @@ defmodule Hierarch do
   defmacro __using__(opts) do
     quote do
       import unquote(__MODULE__)
-      @column_name Keyword.get(unquote(opts), :column_name, "path")
+      @path_column Keyword.get(unquote(opts), :path_column, :path)
       @before_compile unquote(__MODULE__)
     end
   end
 
   defmacro __before_compile__(%{module: definition}) do
-    column_name = Module.get_attribute(definition, :column_name)
+    path_column = Module.get_attribute(definition, :path_column)
 
     quote bind_quoted: [
-      column_name: column_name,
+      path_column: path_column,
       definition: definition
     ] do
       import Ecto.Query
       alias Hierarch.LTree
 
+      schema_argument = quote do: %{unquote(path_column) => path, __struct__: __MODULE__}
+
       @doc """
       Return query expressions for the parent
       """
-      def parent(schema = %{__struct__: __MODULE__}) do
-        parent_labels = schema
-                        |> get_ltree_value()
-                        |> LTree.parent()
-                        |> LTree.dump()
+      def parent(schema = unquote(schema_argument)) do
+        parent_id = LTree.parent_id(path)
 
-        from(
-          t in unquote(definition),
-          where: fragment("path = ?", ^parent_labels)
-        )
+        if is_nil(parent_id) do
+          blank_query()
+        else
+          {id_column, _, _} = @primary_key
+
+          from(
+            t in unquote(definition),
+            where: ^[{id_column, parent_id}]
+          )
+        end
       end
 
       @doc """
       Return query expressions for the root
       """
-      def root(schema = %{__struct__: __MODULE__}) do
-        root_labels = schema
-                      |> get_ltree_value()
-                      |> LTree.root()
-                      |> LTree.dump()
+      def root(schema = unquote(schema_argument)) do
+        {id_column, id} = get_primary_key(schema)
+        root_id = LTree.root_id(path, id)
 
         from(
           t in unquote(definition),
-          where: fragment("path = ?", ^root_labels)
+          where: ^[{id_column, root_id}]
         )
       end
 
@@ -75,29 +78,22 @@ defmodule Hierarch do
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def ancestors(schema = %{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}, opts \\ [with_self: false]) do
-        parent_labels =
-          case {length(labels), opts[:with_self]} do
-            {_, true} ->
-              schema
-              |> get_ltree_value()
-              |> LTree.dump()
-            {1, false} ->
-              nil
-            _ ->
-              schema
-              |> get_ltree_value()
-              |> LTree.parent()
-              |> LTree.dump()
+      def ancestors(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+        {id_column, id} = get_primary_key(schema)
+
+        ancestor_ids =
+          case opts[:with_self] do
+            true -> LTree.split(path) ++ [id]
+            _ -> LTree.split(path)
           end
 
-        if parent_labels do
+        if Enum.empty?(ancestor_ids) do
+          blank_query()
+        else
           from(
             t in unquote(definition),
-            where: fragment("path @> ?", ^parent_labels)
+            where: field(t, ^id_column) in ^ancestor_ids
           )
-        else
-          blank_query()
         end
       end
 
@@ -107,21 +103,18 @@ defmodule Hierarch do
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def children(schema = %{__struct__: __MODULE__}, opts \\ [with_self: false]) do
-        labels = schema
-                 |> get_ltree_value()
-                 |> LTree.dump()
+      def children(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+        {id_column, id} = get_primary_key(schema)
 
-        children_labels =
-          case opts[:with_self] do
-            true -> labels <> ".*{,1}"
-            _ -> labels <> ".*{1}"
-          end
+        children_path = LTree.concat(path, id)
 
-        from(
-          t in unquote(definition),
-          where: fragment("path ~ ?", ^children_labels)
-        )
+        children = unquote(definition)
+                   |> where([t], field(t, ^unquote(path_column)) == ^children_path)
+
+        case opts[:with_self] do
+          true -> children |> or_where([t], field(t, ^id_column) == ^id)
+          _ -> children
+        end
       end
 
       @doc """
@@ -131,21 +124,19 @@ defmodule Hierarch do
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def discendants(schema = %{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}, opts \\ [with_self: false]) do
-        labels = schema
-                 |> get_ltree_value()
-                 |> LTree.dump()
+      def discendants(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+        {id_column, id} = get_primary_key(schema)
 
-        discendants_labels =
-          case opts[:with_self] do
-            true -> labels <> ".*{0,}"
-            _ -> labels <> ".*{1,}"
-          end
+        discendants_path = LTree.concat(path, id)
 
-        from(
-          t in unquote(definition),
-          where: fragment("path ~ ?", ^discendants_labels)
-        )
+        discendants =
+          unquote(definition)
+          |> where([t], fragment("? <@ ?", field(t, ^unquote(path_column)), type(^discendants_path, field(t, unquote(path_column)))))
+
+        case opts[:with_self] do
+          true -> discendants |> or_where([t], field(t, ^id_column) == ^id)
+          _ -> discendants
+        end
       end
 
       @doc """
@@ -155,28 +146,21 @@ defmodule Hierarch do
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def sblings(schema = %{__struct__: __MODULE__}, opts \\ [with_self: false]) do
-        parent_labels = schema
-                        |> get_ltree_value()
-                        |> LTree.parent()
-                        |> LTree.dump()
+      def sblings(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+        {id_column, id} = get_primary_key(schema)
+        parent_path = path
 
-        sblings_labels = parent_labels <> ".*{1}"
+        sblings_with_self =
+          unquote(definition)
+          |> where([t], field(t, ^unquote(path_column)) == ^parent_path)
 
-        if opts[:with_self] do
-          from(
-            t in unquote(definition),
-            where: fragment("path ~ ?", ^sblings_labels)
-          )
-        else
-          itself_labels = schema
-                          |> get_ltree_value()
-                          |> LTree.dump()
-          from(
-            t in unquote(definition),
-            where: fragment("path ~ ?", ^sblings_labels),
-            where: fragment("path <> ?", ^itself_labels)
-          )
+        case opts[:with_self] do
+          true ->
+            sblings_with_self
+          _ ->
+            sblings_with_self
+            |> 
+            where([t], field(t, ^id_column) != ^id)
         end
       end
 
@@ -184,31 +168,36 @@ defmodule Hierarch do
       Return query expressions for roots
       """
       def roots do
+        roots_path = ""
+
         from(
           t in unquote(definition),
-          where: fragment("path ~ ?", "*{1}")
+          where: fragment("path = ?", ^roots_path)
         )
       end
 
       @doc """
       Return true if the node is root
       """
-      def is_root?(%{unquote(:"#{column_name}") => %LTree{labels: labels}, __struct__: __MODULE__}) do
-        length(labels) == 1
-      end
+      def is_root?(%{unquote(:"#{path_column}") => nil, __struct__: __MODULE__}), do: true
+      def is_root?(%{unquote(:"#{path_column}") => "", __struct__: __MODULE__}), do: true
+      def is_root?(%{__struct__: __MODULE__}), do: false
 
       @doc """
       Build child of a node
       """
       def build_child_of(schema, attrs \\ %{})
-      def build_child_of(schema = %{unquote(:"#{column_name}") => ltree, __struct__: __MODULE__}, attrs) do
-        path = LTree.cast(ltree.labels ++ [to_string(schema.id)])
+      def build_child_of(schema = %{unquote(:"#{path_column}") => path, __struct__: __MODULE__}, attrs) do
+        {_, id} = get_primary_key(schema)
+
+        path = LTree.concat(path, to_string(id))
         node_attrs = Map.put(attrs, :path, path)
         struct(__MODULE__, node_attrs)
       end
-
-      defp get_ltree_value(schema) do
-        Map.get(schema, unquote(:"#{column_name}"))
+      # Build the root
+      def build_child_of(_, attrs) do
+        node_attrs = Map.put(attrs, :path, "")
+        struct(__MODULE__, node_attrs)
       end
 
       defp blank_query do
@@ -216,6 +205,11 @@ defmodule Hierarch do
           t in unquote(definition),
           where: fragment("1 = 0")
         )
+      end
+
+      defp get_primary_key(schema) do
+        [{id_column, value}] = Ecto.primary_key(schema)
+        {id_column, value}
       end
     end
   end
