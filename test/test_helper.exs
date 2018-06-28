@@ -4,7 +4,7 @@ defmodule Hierarch.TestCase do
   using(opts) do
     quote do
       use ExUnit.Case, unquote(opts)
-      alias Dummy.{Repo, Catelog}
+      alias Dummy.{Repo, Catelog, Organization}
 
       def create_catelogs do
         catelogs_list = [
@@ -29,6 +29,23 @@ defmodule Hierarch.TestCase do
 
           catelog = Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!
           Map.put acc, name, catelog
+        end)
+      end
+
+      def create_organizations do
+        organizations_list = [
+          "A",
+          "A.B",
+          "A.B.C",
+          "A.D",
+        ]
+
+        Enum.reduce(organizations_list, %{}, fn (name, acc) ->
+          parent_name = Hierarch.LTree.parent_path(name)
+          parent = Map.get(acc, parent_name)
+
+          organization = Organization.build_child_of(parent, %{name: name}) |> Repo.insert!
+          Map.put acc, name, organization
         end)
       end
     end

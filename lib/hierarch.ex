@@ -209,7 +209,7 @@ defmodule Hierarch do
 
       defp get_primary_key(schema) do
         [{id_column, value}] = Ecto.primary_key(schema)
-        {id_column, value}
+        {id_column, to_string(value)}
       end
     end
   end
