@@ -28,12 +28,12 @@ defmodule Hierarch do
     end
   end
 
-  defmacro __before_compile__(%{module: definition}) do
-    path_column = Module.get_attribute(definition, :path_column)
+  defmacro __before_compile__(%{module: table}) do
+    path_column = Module.get_attribute(table, :path_column)
 
     quote bind_quoted: [
       path_column: path_column,
-      definition: definition
+      table: table
     ] do
       import Ecto.Query
       alias Hierarch.LTree
@@ -52,7 +52,7 @@ defmodule Hierarch do
           {id_column, _, _} = @primary_key
 
           from(
-            t in unquote(definition),
+            t in unquote(table),
             where: ^[{id_column, parent_id}]
           )
         end
@@ -66,7 +66,7 @@ defmodule Hierarch do
         root_id = LTree.root_id(path, id)
 
         from(
-          t in unquote(definition),
+          t in unquote(table),
           where: ^[{id_column, root_id}]
         )
       end
@@ -91,7 +91,7 @@ defmodule Hierarch do
           blank_query()
         else
           from(
-            t in unquote(definition),
+            t in unquote(table),
             where: field(t, ^id_column) in ^ancestor_ids
           )
         end
@@ -108,7 +108,7 @@ defmodule Hierarch do
 
         children_path = LTree.concat(path, id)
 
-        children = unquote(definition)
+        children = unquote(table)
                    |> where([t], field(t, ^unquote(path_column)) == ^children_path)
 
         case opts[:with_self] do
@@ -130,7 +130,7 @@ defmodule Hierarch do
         discendants_path = LTree.concat(path, id)
 
         discendants =
-          unquote(definition)
+          unquote(table)
           |> where([t], fragment("? <@ ?", field(t, ^unquote(path_column)), type(^discendants_path, field(t, unquote(path_column)))))
 
         case opts[:with_self] do
@@ -151,7 +151,7 @@ defmodule Hierarch do
         parent_path = path
 
         sblings_with_self =
-          unquote(definition)
+          unquote(table)
           |> where([t], field(t, ^unquote(path_column)) == ^parent_path)
 
         case opts[:with_self] do
@@ -171,7 +171,7 @@ defmodule Hierarch do
         roots_path = ""
 
         from(
-          t in unquote(definition),
+          t in unquote(table),
           where: fragment("path = ?", ^roots_path)
         )
       end
@@ -202,7 +202,7 @@ defmodule Hierarch do
 
       defp blank_query do
         from(
-          t in unquote(definition),
+          t in unquote(table),
           where: fragment("1 = 0")
         )
       end
