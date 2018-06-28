@@ -172,7 +172,7 @@ defmodule Hierarch do
 
         from(
           t in unquote(table),
-          where: fragment("path = ?", ^roots_path)
+          where: field(t, ^unquote(path_column)) == ^roots_path
         )
       end
 
@@ -187,17 +187,17 @@ defmodule Hierarch do
       Build child of a node
       """
       def build_child_of(schema, attrs \\ %{})
-      def build_child_of(schema = %{unquote(:"#{path_column}") => path, __struct__: __MODULE__}, attrs) do
+      def build_child_of(schema = unquote(schema_argument), attrs) do
         {_, id} = get_primary_key(schema)
 
         path = LTree.concat(path, to_string(id))
-        node_attrs = Map.put(attrs, :path, path)
-        struct(__MODULE__, node_attrs)
+        schema_attrs = Map.put(attrs, unquote(path_column), path)
+        struct(__MODULE__, schema_attrs)
       end
       # Build the root
       def build_child_of(_, attrs) do
-        node_attrs = Map.put(attrs, :path, "")
-        struct(__MODULE__, node_attrs)
+        schema_attrs = Map.put(attrs, unquote(path_column), "")
+        struct(__MODULE__, schema_attrs)
       end
 
       defp blank_query do
