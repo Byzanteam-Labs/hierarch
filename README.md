@@ -16,6 +16,15 @@ def deps do
 end
 ```
 
+Enable ltree extension:
+```elixir
+execute "CREATE EXTENSION IF NOT EXISTS ltree"
+```
+Add GIST index:
+```elixir
+create index(:catelogs, [:path], using: "GIST")
+```
+
 ## Example
 
 ### Set `types` at config/config.exs or your environment config file
