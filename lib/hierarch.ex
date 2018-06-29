@@ -140,25 +140,25 @@ defmodule Hierarch do
       end
 
       @doc """
-      Return query expressions for sblings
+      Return query expressions for siblings
 
       ## Options
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def sblings(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+      def siblings(schema = unquote(schema_argument), opts \\ [with_self: false]) do
         {id_column, id} = get_primary_key(schema)
         parent_path = path
 
-        sblings_with_self =
+        siblings_with_self =
           unquote(table)
           |> where([t], field(t, ^unquote(path_column)) == ^parent_path)
 
         case opts[:with_self] do
           true ->
-            sblings_with_self
+            siblings_with_self
           _ ->
-            sblings_with_self
+            siblings_with_self
             |> 
             where([t], field(t, ^id_column) != ^id)
         end

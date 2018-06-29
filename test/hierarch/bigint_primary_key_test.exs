@@ -25,10 +25,10 @@ defmodule BigintPrimaryKeyTest do
     b = Map.get(organizations, "A.B")
     d = Map.get(organizations, "A.D")
 
-    sblings = b
-              |> Organization.sblings
-              |> Repo.all
-    assert sblings == [d]
+    siblings = b
+               |> Organization.siblings
+               |> Repo.all
+    assert siblings == [d]
   end
 
   test "return discendants", organizations do

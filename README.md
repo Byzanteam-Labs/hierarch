@@ -211,8 +211,8 @@ Catelog.discendants(catelog) |> Repo.all
 #  ]
 ```
 
-### `sblings/2`
-Return the sblings query expression of the given struct.
+### `siblings/2`
+Return the siblings query expression of the given struct.
 Options:
 - `:with_self` - when true to include itself. Defaults to false
 ```elixir
@@ -221,7 +221,7 @@ catelog = %Catelog{
   name: "Top.Hobbies",
   path: "a9ae8f40-b016-4bf9-8224-e2755466e699",
 }
-Catelog.sblings(catelog) |> Repo.all
+Catelog.siblings(catelog) |> Repo.all
 #  [
 #    %Catelog{
 #      id: "6c11f83f-3c3c-44bf-9940-8153c1f04de9",
