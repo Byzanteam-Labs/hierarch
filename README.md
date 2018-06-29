@@ -147,7 +147,7 @@ catelog = %Catelog{
 Catelog.parent(catelog) |> Repo.one # nil
 ```
 
-#### `root/1`
+### `root/1`
 Return the root query expression of the given struct, return itself if it is the root.
 ```elixir
 catelog = %Catelog{
