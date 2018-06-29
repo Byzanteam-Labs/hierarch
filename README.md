@@ -18,7 +18,7 @@ end
 
 ## Example
 
-### Add `types` to config/config.exs or your environment config file
+### Set `types` to config/config.exs or your environment config file
 ```elixir
 config :hierarch, MyApp.Repo,
   adapter: Ecto.Adapters.Postgres,
@@ -66,8 +66,8 @@ defmodule MyApp.Catelog do
 end
 ```
 
-### Usage
-#### `build_child_of/2`
+## Usage
+### `build_child_of/2`
 Take the parent struct and attributes struct, return a child struct.
 ```elixir
 parent = %Catelog{
@@ -83,7 +83,7 @@ catelog = Catelog.build_child_of(parent, %{name: "Top.Science"}
 #  }
 ```
 
-#### `is_root?/1`
+### `is_root?/1`
 Detect a struct whether a root.
 ```elixir
 catelog = %Catelog{
@@ -94,7 +94,7 @@ catelog = %Catelog{
 Catelog.is_root?(catelog) # false
 ```
 
-#### `parent/1`
+### `parent/1`
 Return the parent query expression of the given struct, return `nil` if it is the root.
 ```elixir
 catelog = %Catelog{
@@ -116,7 +116,7 @@ catelog = %Catelog{
 Catelog.root(catelog) |> Repo.one # return itself `catelog`
 ```
 
-#### `ancestors/2`
+### `ancestors/2`
 Return the ancestors query expression of the given struct.
 Options:
 - `:with_self` - when true to include itself. Defaults to false
@@ -149,7 +149,7 @@ Catelog.ancestors(catelog, with_self: true) |> Repo.all
 
 ```
 
-#### `discendants/2`
+### `discendants/2`
 Return the discendants query expression of the given struct.
 Options:
 - `:with_self` - when true to include itself. Defaults to false
@@ -169,7 +169,7 @@ Catelog.discendants(catelog) |> Repo.all
 #  ]
 ```
 
-#### `sblings/2`
+### `sblings/2`
 Return the sblings query expression of the given struct.
 Options:
 - `:with_self` - when true to include itself. Defaults to false
@@ -194,7 +194,7 @@ Catelog.sblings(catelog) |> Repo.all
 #  ]
 ```
 
-#### `roots/0`
+### `roots/0`
 Return the roots query expression.
 ```elixir
 Catelog.roots() |> Repo.all
