@@ -33,8 +33,8 @@ defmodule Hierarch.MixProject do
   defp deps do
     [
       {:ecto, ">= 2.0.0"},
-      {:postgrex, ">= 0.13.0"}
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:postgrex, ">= 0.13.0"},
+      {:junit_formatter, ">= 0.0.0", only: :test}
     ]
   end
 
