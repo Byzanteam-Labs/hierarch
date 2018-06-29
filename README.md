@@ -18,7 +18,7 @@ end
 
 ## Example
 
-### Set `types` to config/config.exs or your environment config file
+### Set `types` at config/config.exs or your environment config file
 ```elixir
 config :hierarch, MyApp.Repo,
   adapter: Ecto.Adapters.Postgres,
@@ -62,6 +62,37 @@ defmodule MyApp.Catelog do
     field :path, Hierarch.Ecto.UUIDLTree # Set to `UUIDLTree` if the path is ltree type
 
     timestamps()
+  end
+end
+```
+
+### 🔢Use Hierarch with `bigint` or `integer` primary key, and custom path_column
+```elixir
+defmodule MyApp.Repo.Migrations.CreateOrganizations do
+  use Ecto.Migration
+
+  def change do
+    execute "CREATE EXTENSION IF NOT EXISTS ltree" # Enables Ltree action
+
+    create table(:organizations) do
+      add :name, :string
+      add :ancestry, :ltree, null: false, default: ""
+    end
+
+    create index(:organizations, [:ancestry], using: "GIST")
+  end
+end
+```
+
+```elixir
+defmodule MyApp.Organization do
+  @moduledoc false
+  use Ecto.Schema
+  use Hierarch, path_column: :ancestry # set path_column
+
+  schema "organizations" do
+    field :name, :string
+    field :ancestry, Hierarch.Ecto.LTree # Use LTree for bigint or integer primary key
   end
 end
 ```
