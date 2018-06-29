@@ -45,7 +45,8 @@ defmodule Hierarch.MixProject do
   defp package() do
     [
       name: :hierarch,
-      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      files: ["lib", "mix.exs", "README*", "MIT-LICENSE"],
+      maintainers: ["Phil Chen"],
       licenses: ["MIT"],
       links: %{"GitHub" => @project_url}
     ]
