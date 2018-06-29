@@ -13,9 +13,6 @@ defmodule Hierarch.LTree do
       nil
       iex> LTree.parent_id(nil)
       nil
-
-  ## Options:
-    * `current_pk- the primary key of the current schema
   """
   def parent_id(nil), do: nil
   def parent_id(""), do: nil
@@ -47,7 +44,7 @@ defmodule Hierarch.LTree do
       "Top"
 
   ## Options:
-    * `current_pk- the primary key of the current schema
+    * `current_pk` - the primary key of the current schema
   """
   def root_id(nil, current_pk), do: current_pk
   def root_id("", current_pk), do: current_pk
