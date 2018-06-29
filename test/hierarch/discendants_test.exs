@@ -1,4 +1,4 @@
-defmodule Hierarch.DiscendantsTest do
+defmodule Hierarch.DescendantsTest do
   use Hierarch.TestCase
 
   setup_all do
@@ -11,52 +11,52 @@ defmodule Hierarch.DiscendantsTest do
     {:ok, catelogs}
   end
 
-  describe "discendants/2" do
-    test "returns its discendants", catelogs do
+  describe "descendants/2" do
+    test "returns its descendants", catelogs do
       science      = Map.get(catelogs, "Top.Science")
       astronomy    = Map.get(catelogs, "Top.Science.Astronomy")
       astrophysics = Map.get(catelogs, "Top.Science.Astronomy.Astrophysics")
       cosmology    = Map.get(catelogs, "Top.Science.Astronomy.Cosmology")
 
-      discendants = science
-                    |> Catelog.discendants
+      descendants = science
+                    |> Catelog.descendants
                     |> Repo.all
-      assert discendants == [astronomy, astrophysics, cosmology]
+      assert descendants == [astronomy, astrophysics, cosmology]
     end
 
     test "returns blank array if it is the leaf", catelogs do
       cosmology = Map.get(catelogs, "Top.Science.Astronomy.Cosmology")
 
-      discendants = cosmology
-                    |> Catelog.discendants
+      descendants = cosmology
+                    |> Catelog.descendants
                     |> Repo.all
-      assert discendants == []
+      assert descendants == []
     end
   end
 
-  describe "discendants/2 with_self" do
-    test "returns its discendants and itself when with_self is true", catelogs do
+  describe "descendants/2 with_self" do
+    test "returns its descendants and itself when with_self is true", catelogs do
       science      = Map.get(catelogs, "Top.Science")
       astronomy    = Map.get(catelogs, "Top.Science.Astronomy")
       astrophysics = Map.get(catelogs, "Top.Science.Astronomy.Astrophysics")
       cosmology    = Map.get(catelogs, "Top.Science.Astronomy.Cosmology")
 
-      discendants = science
-                    |> Catelog.discendants(with_self: true)
+      descendants = science
+                    |> Catelog.descendants(with_self: true)
                     |> Repo.all
-      assert discendants == [science, astronomy, astrophysics, cosmology]
+      assert descendants == [science, astronomy, astrophysics, cosmology]
     end
 
-    test "returns its discendants when with_self is false", catelogs do
+    test "returns its descendants when with_self is false", catelogs do
       science      = Map.get(catelogs, "Top.Science")
       astronomy    = Map.get(catelogs, "Top.Science.Astronomy")
       astrophysics = Map.get(catelogs, "Top.Science.Astronomy.Astrophysics")
       cosmology    = Map.get(catelogs, "Top.Science.Astronomy.Cosmology")
 
-      discendants = science
-                    |> Catelog.discendants(with_self: false)
+      descendants = science
+                    |> Catelog.descendants(with_self: false)
                     |> Repo.all
-      assert discendants == [astronomy, astrophysics, cosmology]
+      assert descendants == [astronomy, astrophysics, cosmology]
     end
   end
 end

@@ -15,10 +15,10 @@ defmodule BigintPrimaryKeyTest do
     b = Map.get(organizations, "A.B")
     c = Map.get(organizations, "A.B.C")
 
-    discendants = c
+    descendants = c
                   |> Organization.parent
                   |> Repo.one
-    assert discendants == b
+    assert descendants == b
   end
 
   test "returns sbilings", organizations do
@@ -31,15 +31,15 @@ defmodule BigintPrimaryKeyTest do
     assert siblings == [d]
   end
 
-  test "return discendants", organizations do
+  test "return descendants", organizations do
     a = Map.get(organizations, "A")
     b = Map.get(organizations, "A.B")
     c = Map.get(organizations, "A.B.C")
     d = Map.get(organizations, "A.D")
 
-    discendants = a
-                  |> Organization.discendants
+    descendants = a
+                  |> Organization.descendants
                   |> Repo.all
-    assert discendants == [b, c, d]
+    assert descendants == [b, c, d]
   end
 end

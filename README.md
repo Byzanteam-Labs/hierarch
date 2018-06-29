@@ -191,8 +191,8 @@ Catelog.ancestors(catelog, with_self: true) |> Repo.all
 
 ```
 
-### `discendants/2`
-Return the discendants query expression of the given struct.
+### `descendants/2`
+Return the descendants query expression of the given struct.
 Options:
 - `:with_self` - when true to include itself. Defaults to false
 ```elixir
@@ -201,7 +201,7 @@ catelog = %Catelog{
   name: "Top.Hobbies",
   path: "a9ae8f40-b016-4bf9-8224-e2755466e699",
 }
-Catelog.discendants(catelog) |> Repo.all
+Catelog.descendants(catelog) |> Repo.all
 #  [
 #    %Catelog{
 #      id: "6ff8db2e-5c01-4e82-a25b-4c1568df1efb",

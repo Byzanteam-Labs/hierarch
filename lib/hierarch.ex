@@ -118,24 +118,24 @@ defmodule Hierarch do
       end
 
       @doc """
-      Return query expressions for discendants
+      Return query expressions for descendants
 
       ## Options
 
         * `:with_self` - when true to include itself. Defaults to false.
       """
-      def discendants(schema = unquote(schema_argument), opts \\ [with_self: false]) do
+      def descendants(schema = unquote(schema_argument), opts \\ [with_self: false]) do
         {id_column, id} = get_primary_key(schema)
 
-        discendants_path = LTree.concat(path, id)
+        descendants_path = LTree.concat(path, id)
 
-        discendants =
+        descendants =
           unquote(table)
-          |> where([t], fragment("? <@ ?", field(t, ^unquote(path_column)), type(^discendants_path, field(t, unquote(path_column)))))
+          |> where([t], fragment("? <@ ?", field(t, ^unquote(path_column)), type(^descendants_path, field(t, unquote(path_column)))))
 
         case opts[:with_self] do
-          true -> discendants |> or_where([t], field(t, ^id_column) == ^id)
-          _ -> discendants
+          true -> descendants |> or_where([t], field(t, ^id_column) == ^id)
+          _ -> descendants
         end
       end
 
