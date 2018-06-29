@@ -246,3 +246,13 @@ Catelog.roots() |> Repo.all
 #    }
 #  ]
 ```
+
+## Contributing
+First, set appropriate settings for test database.
+```shell
+export POSTGRES_USER=test_username POSTGRES_PASSWORD=test_password MIX_ENV=test
+```
+run test.
+```elixir
+mix test
+```
