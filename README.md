@@ -1,6 +1,8 @@
 # Hierarch
 
 [![CircleCI](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop.svg?style=svg)](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop)
+[![Hex.pm](https://img.shields.io/hexpm/v/hierarch.svg)](https://hex.pm/packages/hierarch)
+[![Hex docs](http://img.shields.io/badge/hex.pm-docs-green.svg?style=flat)](https://hexdocs.pm/hierarch/Hierarch.html)
 
 Hierarch helps you to build tree structure(hierarchy) for ecto models with ltree(Postgres).
 
