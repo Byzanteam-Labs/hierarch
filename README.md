@@ -1,5 +1,7 @@
 # Hierarch
 
+[![CircleCI](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop.svg?style=svg)](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop)
+
 **TODO: Add description**
 
 ## Installation
