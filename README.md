@@ -13,7 +13,7 @@ Add `hierarch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hierarch, "~> 0.1.1"}
+    {:hierarch, "~> 0.1.2"}
   ]
 end
 ```
