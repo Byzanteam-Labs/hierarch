@@ -42,4 +42,12 @@ defmodule Hierarch.LtreeTest do
       assert root_id == "Top"
     end
   end
+
+  describe "split/1" do
+    test "works" do
+      assert [] == LTree.split(nil)
+      assert [] == LTree.split("")
+      assert ["Top", "Science"] == LTree.split("Top.Science")
+    end
+  end
 end

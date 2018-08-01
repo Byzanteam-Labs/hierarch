@@ -57,6 +57,7 @@ defmodule Hierarch.LTree do
   @doc """
   Split string path into an arry
   """
+  def split(nil), do: []
   def split(""), do: []
   def split(path) when is_binary(path) do
     String.split(path, @separator)
