@@ -50,4 +50,12 @@ defmodule Hierarch.LtreeTest do
       assert ["Top", "Science"] == LTree.split("Top.Science")
     end
   end
+
+  describe "concat/1" do
+    test "works" do
+      assert nil == LTree.concat(nil, nil)
+      assert nil == LTree.concat(nil, "")
+      assert "Top.Science" == LTree.concat("Top.Science", nil)
+    end
+  end
 end

@@ -66,6 +66,7 @@ defmodule Hierarch.LTree do
   @doc """
   Join list into a string path
   """
+  def join([]), do: nil
   def join(list) when is_list(list) do
     Enum.join(list, @separator)
   end
