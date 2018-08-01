@@ -6,7 +6,7 @@ defmodule Dummy.Repo.Migrations.CreateOrganizations do
 
     create table(:organizations) do
       add :name, :string
-      add :ancestry, :ltree, null: false, default: ""
+      add :ancestry, :ltree
     end
 
     create index(:organizations, [:ancestry], using: "GIST")

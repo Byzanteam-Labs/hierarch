@@ -7,7 +7,7 @@ defmodule Dummy.Repo.Migrations.CreateCatelogs do
     create table(:catelogs, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :name, :string
-      add :path, :ltree, null: false, default: ""
+      add :path, :ltree
 
       timestamps()
     end

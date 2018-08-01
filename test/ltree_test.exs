@@ -27,7 +27,7 @@ defmodule Hierarch.LtreeTest do
     end
 
     test "returns blank string" do
-      assert Hierarch.LTree.parent_path("Top") == ""
+      assert Hierarch.LTree.parent_path("Top") == nil
     end
   end
 
@@ -40,6 +40,22 @@ defmodule Hierarch.LtreeTest do
     test "returns itself if it is the root" do
       root_id = LTree.root_id("", "Top")
       assert root_id == "Top"
+    end
+  end
+
+  describe "split/1" do
+    test "works" do
+      assert [] == LTree.split(nil)
+      assert [] == LTree.split("")
+      assert ["Top", "Science"] == LTree.split("Top.Science")
+    end
+  end
+
+  describe "concat/1" do
+    test "works" do
+      assert nil == LTree.concat(nil, nil)
+      assert nil == LTree.concat(nil, "")
+      assert "Top.Science" == LTree.concat("Top.Science", nil)
     end
   end
 end

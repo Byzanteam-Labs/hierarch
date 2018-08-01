@@ -27,6 +27,13 @@ defmodule HierarchTest do
       assert catelog.path == parent.id
     end
 
+    test "builds a child of the root" do
+      parent = %Catelog{name: "Top", path: nil} |> Repo.insert!
+      catelog = Catelog.build_child_of(parent, %{name: "Top.Science"})
+
+      assert catelog.path == parent.id
+    end
+
     test "builds a root" do
       catelog = Catelog.build_child_of(nil, %{name: "Top.Science"})
 

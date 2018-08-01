@@ -57,6 +57,7 @@ defmodule Hierarch.LTree do
   @doc """
   Split string path into an arry
   """
+  def split(nil), do: []
   def split(""), do: []
   def split(path) when is_binary(path) do
     String.split(path, @separator)
@@ -65,6 +66,7 @@ defmodule Hierarch.LTree do
   @doc """
   Join list into a string path
   """
+  def join([]), do: nil
   def join(list) when is_list(list) do
     Enum.join(list, @separator)
   end
@@ -74,7 +76,7 @@ defmodule Hierarch.LTree do
   """
   def concat(one, another) do
     [one, another]
-    |> Enum.reject(fn(label) -> label == "" end)
+    |> Enum.reject(fn(label) -> label == nil or label == "" end)
     |> join()
   end
 end
