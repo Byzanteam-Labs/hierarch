@@ -74,7 +74,7 @@ defmodule Hierarch.LTree do
   """
   def concat(one, another) do
     [one, another]
-    |> Enum.reject(fn(label) -> label == "" end)
+    |> Enum.reject(fn(label) -> label == nil or label == "" end)
     |> join()
   end
 end
