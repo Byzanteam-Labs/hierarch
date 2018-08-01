@@ -117,11 +117,11 @@ parent = %Catelog{
   name: "Top",
   path: ""
 }
-catelog = Catelog.build_child_of(parent, %{name: "Top.Science"}
+catelog = Catelog.build_child_of(parent, %{name: "Top.Science"})
 #  %Catelog{
 #    id: nil,
 #    name: "Top.Science",
-#    path: "a9ae8f40-b016-4bf9-8224-e2755466e699.570526aa-e2f3-49a7-870a-c150d3bf6ac9"
+#    path: "570526aa-e2f3-49a7-870a-c150d3bf6ac9"
 #  }
 ```
 
@@ -133,7 +133,7 @@ catelog = %Catelog{
   name: "Top",
   path: ""
 }
-Catelog.is_root?(catelog) # false
+Catelog.is_root?(catelog) # true
 ```
 
 ### `parent/1`
