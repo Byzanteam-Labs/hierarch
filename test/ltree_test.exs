@@ -27,7 +27,7 @@ defmodule Hierarch.LtreeTest do
     end
 
     test "returns blank string" do
-      assert Hierarch.LTree.parent_path("Top") == ""
+      assert Hierarch.LTree.parent_path("Top") == nil
     end
   end
 

@@ -47,7 +47,7 @@ defmodule MyApp.Repo.Migrations.CreateCatelogs do
     create table(:catelogs, primary_key: false) do
       add :id, :uuid, primary_key: true # the primary key is UUID
       add :name, :string
-      add :path, :ltree, null: false, default: "" # Default value should to be `""`
+      add :path, :ltree
 
       timestamps()
     end
