@@ -31,7 +31,7 @@ create index(:catelogs, [:path], using: "GIST")
 
 ### Set `types` at config/config.exs or your environment config file
 ```elixir
-config :hierarch, MyApp.Repo,
+config :my_app, MyApp.Repo,
   adapter: Ecto.Adapters.Postgres,
   types: Hierarch.Postgrex.Types
 ```
