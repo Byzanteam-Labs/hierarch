@@ -14,7 +14,7 @@ defmodule Hierarch.Query.Descendants do
 
     uuids_query =
       from t in queryable,
-      select: %{__ancestry__: fragment("text2ltree(replace(ltree2text(?), '-', '_')) || replace(text(?), '-', '_')", field(t, ^path_column), field(t, ^pk_column))}
+      select: %{__ancestry__: fragment("? || replace(text(?), '-', '_')", field(t, ^path_column), field(t, ^pk_column))}
 
     uuids_array_query =
       from t in subquery(uuids_query),
