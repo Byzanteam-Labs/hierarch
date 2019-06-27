@@ -20,7 +20,7 @@ defmodule Hierarch.SiblingsTest do
       siblings = science
                  |> Catelog.siblings
                  |> Repo.all
-      assert siblings == [hobbies, collections]
+      assert_match siblings, [hobbies, collections]
     end
   end
 
@@ -33,7 +33,7 @@ defmodule Hierarch.SiblingsTest do
       siblings = science
                  |> Catelog.siblings(with_self: true)
                  |> Repo.all
-      assert siblings == [science, hobbies, collections]
+      assert_match siblings, [science, hobbies, collections]
     end
 
     test "returns its siblings when with_self is false", catelogs do
@@ -44,7 +44,7 @@ defmodule Hierarch.SiblingsTest do
       siblings = science
                  |> Catelog.siblings(with_self: false)
                  |> Repo.all
-      assert siblings == [hobbies, collections]
+      assert_match siblings, [hobbies, collections]
     end
   end
 end

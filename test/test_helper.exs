@@ -4,6 +4,7 @@ defmodule Hierarch.TestCase do
   using(opts) do
     quote do
       use ExUnit.Case, unquote(opts)
+      import unquote(__MODULE__), only: [assert_match: 2]
       alias Dummy.{Repo, Catelog, Organization}
 
       def create_catelogs do
@@ -60,6 +61,23 @@ defmodule Hierarch.TestCase do
   setup do
     Ecto.Adapters.SQL.Sandbox.mode(Dummy.Repo, {:shared, self()})
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Dummy.Repo)
+  end
+
+  @doc """
+  ## Example
+
+  ```
+  assert_match [1, 2], [2, 1]
+  ```
+  """
+  @spec assert_match(list(), list()) :: term()
+  defmacro assert_match(list, another_list) do
+    quote location: :keep do
+      set = MapSet.new(unquote(list))
+      another_list = MapSet.new(unquote(another_list))
+
+      assert set == another_list
+    end
   end
 end
 

@@ -40,7 +40,7 @@ defmodule Hierarch.ChildrenTest do
       children = science
                  |> Catelog.children(with_self: true)
                  |> Repo.all
-      assert children == [science, astronomy]
+      assert_match children, [science, astronomy]
     end
 
     test "returns its children when with_self is false", catelogs do

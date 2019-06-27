@@ -21,7 +21,7 @@ defmodule Hierarch.DescendantsTest do
       descendants = science
                     |> Catelog.descendants
                     |> Repo.all
-      assert descendants == [astronomy, astrophysics, cosmology]
+      assert_match descendants, [astronomy, astrophysics, cosmology]
     end
 
     test "returns blank array if it is the leaf", catelogs do
@@ -44,7 +44,7 @@ defmodule Hierarch.DescendantsTest do
       descendants = science
                     |> Catelog.descendants(with_self: true)
                     |> Repo.all
-      assert descendants == [science, astronomy, astrophysics, cosmology]
+      assert_match descendants, [science, astronomy, astrophysics, cosmology]
     end
 
     test "returns its descendants when with_self is false", catelogs do
@@ -56,7 +56,7 @@ defmodule Hierarch.DescendantsTest do
       descendants = science
                     |> Catelog.descendants(with_self: false)
                     |> Repo.all
-      assert descendants == [astronomy, astrophysics, cosmology]
+      assert_match descendants, [astronomy, astrophysics, cosmology]
     end
   end
 end
