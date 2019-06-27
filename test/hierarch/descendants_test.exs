@@ -59,4 +59,31 @@ defmodule Hierarch.DescendantsTest do
       assert_match descendants, [astronomy, astrophysics, cosmology]
     end
   end
+
+  describe "query/1" do
+    import Ecto.Query
+
+    test "returns their descendants", catelogs do
+      science = Map.get(catelogs, "Top.Science")
+      hobbies   = Map.get(catelogs, "Top.Hobbies")
+
+      astronomy = Map.get(catelogs, "Top.Science.Astronomy")
+      astrophysics = Map.get(catelogs, "Top.Science.Astronomy.Astrophysics")
+      cosmology    = Map.get(catelogs, "Top.Science.Astronomy.Cosmology")
+
+      amateurs_astronomy = Map.get(catelogs, "Top.Hobbies.Amateurs_Astronomy")
+
+      query = from(
+        c in Catelog,
+        where: c.id in ^[science.id, hobbies.id]
+      )
+
+      descendants =
+        query
+        |> Hierarch.Query.Descendants.query()
+        |> Repo.all
+
+      assert_match descendants, [astronomy, astrophysics, cosmology, amateurs_astronomy]
+    end
+  end
 end
