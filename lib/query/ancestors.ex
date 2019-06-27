@@ -1,12 +1,6 @@
 defmodule Hierarch.Query.Ancestors do
   import Ecto.Query
 
-  @doc """
-  Return query expressions for ancestors
-  ## Options
-
-    * `:with_self` - when true to include itself. Defaults to false.
-  """
   def query(%{from: %{source: {_table_name, schema}}} = queryable) do
     path_column = schema.__hierarch__(:path_column)
 
@@ -26,6 +20,12 @@ defmodule Hierarch.Query.Ancestors do
     |> join(:cross, [], a in subquery(uuids_array_query))
     |> where([t, a], field(t, ^pk_column) in a.__uuids__)
   end
+  @doc """
+  Return query expressions for ancestors
+  ## Options
+
+    * `:with_self` - when true to include itself. Defaults to false.
+  """
   def query(%schema{} = struct, opts \\ []) do
     with_self = Keyword.get(opts, :with_self, false)
 
