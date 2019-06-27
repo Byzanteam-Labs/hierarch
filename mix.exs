@@ -1,7 +1,7 @@
 defmodule Hierarch.MixProject do
   use Mix.Project
 
-  @project_url "https://github.com/GreenNerd-Labs/hierarch"
+  @project_url "https://github.com/Byzanteam-Labs/hierarch"
   @version "0.2.0"
 
   def project do
