@@ -53,4 +53,29 @@ defmodule Hierarch.ChildrenTest do
       assert children == [astronomy]
     end
   end
+
+  describe "children/1" do
+    import Ecto.Query
+
+    test "returns children of a query", catelogs do
+      science = Map.get(catelogs, "Top.Science")
+      hobbies   = Map.get(catelogs, "Top.Hobbies")
+
+      astronomy = Map.get(catelogs, "Top.Science.Astronomy")
+
+      amateurs_astronomy = Map.get(catelogs, "Top.Hobbies.Amateurs_Astronomy")
+
+      query = from(
+        c in Catelog,
+        where: c.id in ^[science.id, hobbies.id]
+      )
+
+      descendants =
+        query
+        |> Hierarch.Query.Children.query()
+        |> Repo.all
+
+      assert_match descendants, [astronomy, amateurs_astronomy]
+    end
+  end
 end
