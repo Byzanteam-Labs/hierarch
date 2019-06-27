@@ -55,7 +55,7 @@ jobs:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
-      - run: mix do: ecto.create, ecto.migrate
+      - run: mix do ecto.create, ecto.migrate
       - run: mix test
 
       - store_test_results:
