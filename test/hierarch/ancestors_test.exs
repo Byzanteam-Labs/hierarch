@@ -54,4 +54,29 @@ defmodule Hierarch.AncestorsTest do
       assert ancestors == [top]
     end
   end
+
+  describe "ancestors/1" do
+    import Ecto.Query
+
+    test "returns ancestors of a query", catelogs do
+      science  = Map.get(catelogs, "Top.Science")
+      hobbies  = Map.get(catelogs, "Top.Hobbies")
+      pictures = Map.get(catelogs, "Top.Collections.Pictures")
+
+      top         = Map.get(catelogs, "Top")
+      collections = Map.get(catelogs, "Top.Collections")
+
+      query = from(
+        c in Catelog,
+        where: c.id in ^[science.id, hobbies.id, pictures.id]
+      )
+
+      descendants =
+        query
+        |> Hierarch.Query.Ancestors.query()
+        |> Repo.all
+
+      assert_match descendants, [top, collections]
+    end
+  end
 end
