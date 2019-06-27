@@ -24,6 +24,7 @@ defmodule Hierarch.Query.Siblings do
     case with_self do
       true ->
         siblings_with_self_query
+
       _ ->
         siblings_with_self_query |> where([t], field(t, ^pk_column) != ^value)
     end

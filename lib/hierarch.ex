@@ -22,6 +22,7 @@ defmodule Hierarch do
 
   defmacro __using__(opts) do
     path_column = Keyword.get(opts, :path_column, :path)
+
     quote do
       def __hierarch__(:path_column) do
         unquote(path_column)
@@ -32,7 +33,6 @@ defmodule Hierarch do
   end
 
   defmacro __before_compile__(%{module: schema}) do
-
     quote do
       # queries
       defdelegate ancestors(struct, opts \\ []), to: Hierarch.Query.Ancestors, as: :query
@@ -40,14 +40,17 @@ defmodule Hierarch do
       defdelegate descendants(struct, opts \\ []), to: Hierarch.Query.Descendants, as: :query
       defdelegate parent(struct), to: Hierarch.Query.Parent, as: :query
       defdelegate root(struct), to: Hierarch.Query.Root, as: :query
+
       def roots do
         Hierarch.Query.Roots.query(unquote(schema))
       end
+
       defdelegate siblings(struct, opts \\ []), to: Hierarch.Query.Siblings, as: :query
 
       # utils
       defdelegate is_root?(struct), to: Hierarch.Util
       defdelegate build_child_of(struct, attrs \\ %{}), to: Hierarch.Util
+
       def build(attrs) do
         Hierarch.Util.build(unquote(schema), attrs)
       end

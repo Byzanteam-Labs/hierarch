@@ -9,6 +9,7 @@ defmodule Hierarch.Postgrex.Extensions.LTree do
   def init(opts) do
     Keyword.get(opts, :decode_copy, :copy)
   end
+
   # Use this extension when `type` from %Postgrex.TypeInfo{} is "ltree"
   def matching(_state), do: [type: "ltree"]
   # Use the text format, "ltree" does not have a binary format.
@@ -22,9 +23,10 @@ defmodule Hierarch.Postgrex.Extensions.LTree do
   def encode(_state) do
     quote do
       bin when is_binary(bin) ->
-        [<<byte_size(bin) :: signed-size(32)>> | bin]
+        [<<byte_size(bin)::signed-size(32)>> | bin]
     end
   end
+
   # Use quoted expression to decode the data to a string. Decoding matches
   # on an encoded binary with the same signed 32bit big endian integer
   # length header.
@@ -34,6 +36,7 @@ defmodule Hierarch.Postgrex.Extensions.LTree do
         bin
     end
   end
+
   def decode(:copy) do
     quote do
       <<len::signed-size(32), bin::binary-size(len)>> ->

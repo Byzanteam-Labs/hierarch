@@ -12,7 +12,7 @@ defmodule Hierarch.Postgrex.Extensions.LQuery do
   def encode(_state) do
     quote do
       bin when is_binary(bin) ->
-        [<<byte_size(bin) :: signed-size(32)>> | bin]
+        [<<byte_size(bin)::signed-size(32)>> | bin]
     end
   end
 
@@ -22,6 +22,7 @@ defmodule Hierarch.Postgrex.Extensions.LQuery do
         bin
     end
   end
+
   def decode(:copy) do
     quote do
       <<len::signed-size(32), bin::binary-size(len)>> ->
@@ -29,4 +30,3 @@ defmodule Hierarch.Postgrex.Extensions.LQuery do
     end
   end
 end
-

@@ -9,7 +9,7 @@ defmodule Hierarch.MixProject do
       app: :hierarch,
       version: @version,
       elixir: "~> 1.6",
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       source_url: @project_url,
       homepage_url: @project_url,
@@ -20,14 +20,15 @@ defmodule Hierarch.MixProject do
   end
 
   def application do
-    [extra_applications: application(Mix.env)]
+    [extra_applications: application(Mix.env())]
   end
+
   defp application(:test), do: [:postgrex, :ecto, :logger]
   defp application(_), do: [:logger]
 
   defp elixirc_paths(:test), do: elixirc_paths() ++ ["test/support"]
-  defp elixirc_paths(_),     do: elixirc_paths()
-  defp elixirc_paths,        do: ["lib"]
+  defp elixirc_paths(_), do: elixirc_paths()
+  defp elixirc_paths, do: ["lib"]
 
   defp deps do
     [

@@ -15,9 +15,10 @@ defmodule Hierarch.Query.Parent do
 
     case parent_id do
       nil ->
-        from t in schema, where: 0 == 1
+        from(t in schema, where: 0 == 1)
+
       _ ->
-        from t in schema, where: field(t, ^pk_column) == ^parent_id
+        from(t in schema, where: field(t, ^pk_column) == ^parent_id)
     end
   end
 end

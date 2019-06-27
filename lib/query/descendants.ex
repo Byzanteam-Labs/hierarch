@@ -19,17 +19,27 @@ defmodule Hierarch.Query.Descendants do
     [pk_column] = schema.__schema__(:primary_key)
 
     uuids_query =
-      from t in queryable,
-      select: %{__ancestry__: fragment("? || replace(text(?), '-', '_')", field(t, ^path_column), field(t, ^pk_column))}
+      from(t in queryable,
+        select: %{
+          __ancestry__:
+            fragment(
+              "? || replace(text(?), '-', '_')",
+              field(t, ^path_column),
+              field(t, ^pk_column)
+            )
+        }
+      )
 
     uuids_array_query =
-      from t in subquery(uuids_query),
-      select: %{__ltrees__: fragment("array_agg(?)", t.__ancestry__)}
+      from(t in subquery(uuids_query),
+        select: %{__ltrees__: fragment("array_agg(?)", t.__ancestry__)}
+      )
 
     schema
     |> join(:cross, [], a in subquery(uuids_array_query))
     |> where([t, a], fragment("? @> ?", a.__ltrees__, field(t, ^path_column)))
   end
+
   @doc """
   Return query expressions for descendants
   ## Options
@@ -73,7 +83,12 @@ defmodule Hierarch.Query.Descendants do
     descendants_query =
       from(
         t in schema,
-        where: fragment("? <@ ?", field(t, ^path_column), type(^descendants_path, ^path_column_field_type))
+        where:
+          fragment(
+            "? <@ ?",
+            field(t, ^path_column),
+            type(^descendants_path, ^path_column_field_type)
+          )
       )
 
     case with_self do

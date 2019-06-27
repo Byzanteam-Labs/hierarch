@@ -6,8 +6,8 @@ defmodule Dummy.Catelog do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "catelogs" do
-    field :name, :string
-    field :path, Hierarch.Ecto.UUIDLTree
+    field(:name, :string)
+    field(:path, Hierarch.Ecto.UUIDLTree)
 
     timestamps()
   end

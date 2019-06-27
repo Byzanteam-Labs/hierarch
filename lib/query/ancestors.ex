@@ -19,19 +19,28 @@ defmodule Hierarch.Query.Ancestors do
     [pk_column] = schema.__schema__(:primary_key)
 
     uuids_query =
-      from t in queryable,
-      select: %{__uuid__: fragment("regexp_split_to_table(replace(ltree2text(?), '_', '-'), '\\.')", field(t, ^path_column))}
+      from(t in queryable,
+        select: %{
+          __uuid__:
+            fragment(
+              "regexp_split_to_table(replace(ltree2text(?), '_', '-'), '\\.')",
+              field(t, ^path_column)
+            )
+        }
+      )
 
     uuids_array_query =
-      from t in subquery(uuids_query),
-      where: not is_nil(t.__uuid__),
-      or_where: t.__uuid__ != ^"",
-      select: %{__uuids__: fragment("array_agg(cast(? as uuid))", t.__uuid__)}
+      from(t in subquery(uuids_query),
+        where: not is_nil(t.__uuid__),
+        or_where: t.__uuid__ != ^"",
+        select: %{__uuids__: fragment("array_agg(cast(? as uuid))", t.__uuid__)}
+      )
 
     schema
     |> join(:cross, [], a in subquery(uuids_array_query))
     |> where([t, a], field(t, ^pk_column) in a.__uuids__)
   end
+
   @doc """
   Return query expressions for ancestors
   ## Options

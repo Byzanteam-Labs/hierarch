@@ -4,9 +4,9 @@ defmodule Hierarch.RootsTest do
   setup_all do
     catelogs = create_catelogs()
 
-    on_exit fn ->
+    on_exit(fn ->
       Repo.delete_all(Catelog)
-    end
+    end)
 
     {:ok, catelogs}
   end
@@ -15,8 +15,10 @@ defmodule Hierarch.RootsTest do
     test "returns its roots", catelogs do
       top = Map.get(catelogs, "Top")
 
-      roots = Catelog.roots
-              |> Repo.all
+      roots =
+        Catelog.roots()
+        |> Repo.all()
+
       assert roots == [top]
     end
   end

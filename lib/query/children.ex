@@ -19,17 +19,27 @@ defmodule Hierarch.Query.Children do
     [pk_column] = schema.__schema__(:primary_key)
 
     uuids_query =
-      from t in queryable,
-      select: %{__ancestry__: fragment("? || replace(text(?), '-', '_')", field(t, ^path_column), field(t, ^pk_column))}
+      from(t in queryable,
+        select: %{
+          __ancestry__:
+            fragment(
+              "? || replace(text(?), '-', '_')",
+              field(t, ^path_column),
+              field(t, ^pk_column)
+            )
+        }
+      )
 
     uuids_array_query =
-      from t in subquery(uuids_query),
-      select: %{__ltrees__: fragment("array_agg(?)", t.__ancestry__)}
+      from(t in subquery(uuids_query),
+        select: %{__ltrees__: fragment("array_agg(?)", t.__ancestry__)}
+      )
 
     schema
     |> join(:cross, [], a in subquery(uuids_array_query))
     |> where([t, a], field(t, ^path_column) in a.__ltrees__)
   end
+
   @doc """
   Return query expressions for children
   ## Options
@@ -65,10 +75,11 @@ defmodule Hierarch.Query.Children do
 
     children_path = Hierarch.LTree.concat(path, value)
 
-    children_query = from(
-      t in schema,
-      where: field(t, ^schema.__hierarch__(:path_column)) == ^children_path
-    )
+    children_query =
+      from(
+        t in schema,
+        where: field(t, ^schema.__hierarch__(:path_column)) == ^children_path
+      )
 
     case with_self do
       true -> children_query |> or_where([t], field(t, ^pk_column) == ^value)

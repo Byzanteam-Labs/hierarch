@@ -24,15 +24,17 @@ defmodule Hierarch.TestCase do
           "Top.Collections.Pictures.Astronomy.Astronauts"
         ]
 
-        Enum.reduce(catelogs_list, %{}, fn (name, acc) ->
+        Enum.reduce(catelogs_list, %{}, fn name, acc ->
           parent_name = Hierarch.LTree.parent_path(name)
           parent = Map.get(acc, parent_name)
 
-          catelog = case parent do
-            nil -> Catelog.build(%{name: name}) |> Repo.insert!
-            _ -> Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!
-          end
-          Map.put acc, name, catelog
+          catelog =
+            case parent do
+              nil -> Catelog.build(%{name: name}) |> Repo.insert!()
+              _ -> Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!()
+            end
+
+          Map.put(acc, name, catelog)
         end)
       end
 
@@ -41,18 +43,20 @@ defmodule Hierarch.TestCase do
           "A",
           "A.B",
           "A.B.C",
-          "A.D",
+          "A.D"
         ]
 
-        Enum.reduce(organizations_list, %{}, fn (name, acc) ->
+        Enum.reduce(organizations_list, %{}, fn name, acc ->
           parent_name = Hierarch.LTree.parent_path(name)
           parent = Map.get(acc, parent_name)
 
-          organization = case parent do
-            nil -> Organization.build(%{name: name}) |> Repo.insert!
-            _ -> Organization.build_child_of(parent, %{name: name}) |> Repo.insert!
-          end
-          Map.put acc, name, organization
+          organization =
+            case parent do
+              nil -> Organization.build(%{name: name}) |> Repo.insert!()
+              _ -> Organization.build_child_of(parent, %{name: name}) |> Repo.insert!()
+            end
+
+          Map.put(acc, name, organization)
         end)
       end
     end
@@ -82,12 +86,12 @@ defmodule Hierarch.TestCase do
 end
 
 if System.get_env("CI") == "true" do
-  junit_folder = Mix.Project.build_path() <> "/junit/#{Mix.Project.config[:app]}"
+  junit_folder = Mix.Project.build_path() <> "/junit/#{Mix.Project.config()[:app]}"
   File.mkdir_p!(junit_folder)
   :ok = Application.put_env(:junit_formatter, :report_dir, junit_folder)
 
-  ExUnit.configure formatters: [JUnitFormatter, ExUnit.CLIFormatter]
+  ExUnit.configure(formatters: [JUnitFormatter, ExUnit.CLIFormatter])
 end
 
-{:ok, _} = Dummy.Repo.start_link
+{:ok, _} = Dummy.Repo.start_link()
 ExUnit.start()
