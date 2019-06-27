@@ -27,7 +27,10 @@ defmodule Hierarch.TestCase do
           parent_name = Hierarch.LTree.parent_path(name)
           parent = Map.get(acc, parent_name)
 
-          catelog = Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!
+          catelog = case parent do
+            nil -> Catelog.build(%{name: name}) |> Repo.insert!
+            _ -> Catelog.build_child_of(parent, %{name: name}) |> Repo.insert!
+          end
           Map.put acc, name, catelog
         end)
       end
@@ -44,7 +47,10 @@ defmodule Hierarch.TestCase do
           parent_name = Hierarch.LTree.parent_path(name)
           parent = Map.get(acc, parent_name)
 
-          organization = Organization.build_child_of(parent, %{name: name}) |> Repo.insert!
+          organization = case parent do
+            nil -> Organization.build(%{name: name}) |> Repo.insert!
+            _ -> Organization.build_child_of(parent, %{name: name}) |> Repo.insert!
+          end
           Map.put acc, name, organization
         end)
       end

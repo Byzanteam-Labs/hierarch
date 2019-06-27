@@ -13,9 +13,11 @@ defmodule Hierarch.Query.Parent do
 
     [pk_column] = schema.__schema__(:primary_key)
 
-    from(
-      t in schema,
-      where: field(t, ^pk_column) == ^parent_id
-    )
+    case parent_id do
+      nil ->
+        from t in schema, where: 0 == 1
+      _ ->
+        from t in schema, where: field(t, ^pk_column) == ^parent_id
+    end
   end
 end

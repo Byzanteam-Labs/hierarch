@@ -31,22 +31,26 @@ defmodule Hierarch do
     end
   end
 
-  defmacro __before_compile__(_env) do
+  defmacro __before_compile__(%{module: schema}) do
 
     quote do
       # queries
-      defdelegate ancestors(struct), to: Hierarch.Query.Ancestors, as: :query
+      defdelegate ancestors(struct, opts \\ []), to: Hierarch.Query.Ancestors, as: :query
       defdelegate children(struct, opts \\ []), to: Hierarch.Query.Children, as: :query
       defdelegate descendants(struct, opts \\ []), to: Hierarch.Query.Descendants, as: :query
       defdelegate parent(struct), to: Hierarch.Query.Parent, as: :query
       defdelegate root(struct), to: Hierarch.Query.Root, as: :query
-      defdelegate roots(schema), to: Hierarch.Query.Roots, as: :query
+      def roots do
+        Hierarch.Query.Roots.query(unquote(schema))
+      end
       defdelegate siblings(struct, opts \\ []), to: Hierarch.Query.Siblings, as: :query
 
       # utils
       defdelegate is_root?(struct), to: Hierarch.Util
       defdelegate build_child_of(struct, attrs \\ %{}), to: Hierarch.Util
-      defdelegate build(schema, attrs), to: Hierarch.Util
+      def build(attrs) do
+        Hierarch.Util.build(unquote(schema), attrs)
+      end
     end
   end
 end

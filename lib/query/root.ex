@@ -5,14 +5,11 @@ defmodule Hierarch.Query.Root do
   Return query expressions for the root
   """
   def query(%schema{} = struct) do
-    path = Hierarch.Util.struct(struct)
+    path = Hierarch.Util.struct_path(struct)
 
     [{pk_column, value}] = Ecto.primary_key(struct)
 
-    root_id =
-      struct
-      |> Hierarch.Util.struct_path()
-      |> Hierarch.LTree.root_id(path, value)
+    root_id = Hierarch.LTree.root_id(path, value)
 
     from(
       t in schema,

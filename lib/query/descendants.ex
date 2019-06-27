@@ -10,20 +10,19 @@ defmodule Hierarch.Query.Descendants do
   def query(%schema{} = struct, opts \\ []) do
     with_self = Keyword.get(opts, :with_self, false)
 
-    path = Hierarch.Util.struct(struct)
+    path = Hierarch.Util.struct_path(struct)
 
     [{pk_column, value}] = Ecto.primary_key(struct)
 
-    path_column = schema.__hierarch__(:path_column)
-
     descendants_path = Hierarch.LTree.concat(path, value)
 
-    path_column_field = dynamic([t], field(t, ^path_column))
+    path_column = schema.__hierarch__(:path_column)
+    path_column_field_type = schema.__schema__(:type, path_column)
 
     descendants_query =
       from(
         t in schema,
-        where: fragment("? <@ ?", ^path_column_field, type(^descendants_path, ^path_column_field))
+        where: fragment("? <@ ?", field(t, ^path_column), type(^descendants_path, ^path_column_field_type))
       )
 
     case with_self do

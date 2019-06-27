@@ -10,7 +10,7 @@ defmodule Hierarch.Query.Children do
   def query(%schema{} = struct, opts \\ []) do
     with_self = Keyword.get(opts, :with_self, false)
 
-    path = Hierarch.Util.struct(struct)
+    path = Hierarch.Util.struct_path(struct)
 
     [{pk_column, value}] = Ecto.primary_key(struct)
 

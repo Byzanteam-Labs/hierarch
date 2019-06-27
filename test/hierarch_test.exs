@@ -35,7 +35,7 @@ defmodule HierarchTest do
     end
 
     test "builds a root" do
-      catelog = Catelog.build_child_of(nil, %{name: "Top.Science"})
+      catelog = Catelog.build(%{name: "Top.Science"})
 
       assert catelog.path == ""
     end

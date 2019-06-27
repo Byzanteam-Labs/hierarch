@@ -12,7 +12,7 @@ defmodule Hierarch.Query.Siblings do
 
     [{pk_column, value}] = Ecto.primary_key(struct)
 
-    path = Hierarch.Util.struct(struct)
+    path = Hierarch.Util.struct_path(struct)
     parent_path = path
 
     siblings_with_self_query =
