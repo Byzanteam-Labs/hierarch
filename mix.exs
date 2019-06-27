@@ -15,8 +15,7 @@ defmodule Hierarch.MixProject do
       homepage_url: @project_url,
       description: description(),
       package: package(),
-      deps: deps(),
-      aliases: aliases()
+      deps: deps()
     ]
   end
 
@@ -32,7 +31,8 @@ defmodule Hierarch.MixProject do
 
   defp deps do
     [
-      {:ecto, ">= 2.0.0"},
+      {:ecto, "~> 3.0"},
+      {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.13.0"},
       {:junit_formatter, ">= 0.0.0", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev}
@@ -50,12 +50,6 @@ defmodule Hierarch.MixProject do
       maintainers: ["Phil Chen"],
       licenses: ["MIT"],
       links: %{"GitHub" => @project_url}
-    ]
-  end
-
-  defp aliases do
-    [
-      "test": ["ecto.drop --quite", "ecto.create --quite", "ecto.migrate --quite", "test"]
     ]
   end
 end
