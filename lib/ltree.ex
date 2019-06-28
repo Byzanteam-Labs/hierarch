@@ -16,10 +16,11 @@ defmodule Hierarch.LTree do
   """
   def parent_id(nil), do: nil
   def parent_id(""), do: nil
+
   def parent_id(path) when is_binary(path) do
     path
     |> split
-    |> List.last
+    |> List.last()
   end
 
   @doc """
@@ -48,10 +49,11 @@ defmodule Hierarch.LTree do
   """
   def root_id(nil, current_pk), do: current_pk
   def root_id("", current_pk), do: current_pk
+
   def root_id(path, _current_pk) do
     path
     |> split
-    |> List.first
+    |> List.first()
   end
 
   @doc """
@@ -59,6 +61,7 @@ defmodule Hierarch.LTree do
   """
   def split(nil), do: []
   def split(""), do: []
+
   def split(path) when is_binary(path) do
     String.split(path, @separator)
   end
@@ -67,6 +70,7 @@ defmodule Hierarch.LTree do
   Join list into a string path
   """
   def join([]), do: nil
+
   def join(list) when is_list(list) do
     Enum.join(list, @separator)
   end
@@ -76,7 +80,7 @@ defmodule Hierarch.LTree do
   """
   def concat(one, another) do
     [one, another]
-    |> Enum.reject(fn(label) -> label == nil or label == "" end)
+    |> Enum.reject(fn label -> label == nil or label == "" end)
     |> join()
   end
 end

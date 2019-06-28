@@ -1,6 +1,6 @@
 # Hierarch
 
-[![CircleCI](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop.svg?style=svg)](https://circleci.com/gh/GreenNerd-Labs/hierarch/tree/develop)
+[![CircleCI](https://circleci.com/gh/Byzanteam-Labs/hierarch/tree/develop.svg?style=svg)](https://circleci.com/gh/Byzanteam-Labs/hierarch/tree/develop)
 [![Hex.pm](https://img.shields.io/hexpm/v/hierarch.svg)](https://hex.pm/packages/hierarch)
 [![Hex docs](http://img.shields.io/badge/hex.pm-docs-green.svg?style=flat)](https://hexdocs.pm/hierarch/Hierarch.html)
 
@@ -13,7 +13,7 @@ Add `hierarch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hierarch, "~> 0.1.2"}
+    {:hierarch, "~> 0.2.0"}
   ]
 end
 ```
@@ -31,7 +31,7 @@ create index(:catelogs, [:path], using: "GIST")
 
 ### Set `types` at config/config.exs or your environment config file
 ```elixir
-config :hierarch, MyApp.Repo,
+config :my_app, MyApp.Repo,
   adapter: Ecto.Adapters.Postgres,
   types: Hierarch.Postgrex.Types
 ```

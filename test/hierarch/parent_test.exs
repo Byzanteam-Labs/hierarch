@@ -5,9 +5,9 @@ defmodule Hierarch.ParentTest do
     Repo.delete_all(Catelog)
     catelogs = create_catelogs()
 
-    on_exit fn ->
+    on_exit(fn ->
       Repo.delete_all(Catelog)
-    end
+    end)
 
     {:ok, catelogs}
   end
@@ -15,20 +15,24 @@ defmodule Hierarch.ParentTest do
   describe "parent/1" do
     test "returns its parent", catelogs do
       science = Map.get(catelogs, "Top.Science")
-      top     = Map.get(catelogs, "Top")
+      top = Map.get(catelogs, "Top")
 
-      parent = science
-               |> Catelog.parent
-               |> Repo.one
+      parent =
+        science
+        |> Catelog.parent()
+        |> Repo.one()
+
       assert parent == top
     end
 
     test "returns nil if it is the root", catelogs do
       top = Map.get(catelogs, "Top")
 
-      parent = top
-               |> Catelog.parent
-               |> Repo.one
+      parent =
+        top
+        |> Catelog.parent()
+        |> Repo.one()
+
       assert is_nil(parent)
     end
   end

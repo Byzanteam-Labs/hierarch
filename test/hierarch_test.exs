@@ -21,21 +21,21 @@ defmodule HierarchTest do
 
   describe "build_child_of/2" do
     test "builds a child" do
-      parent = %Catelog{name: "Top", path: ""} |> Repo.insert!
+      parent = %Catelog{name: "Top", path: ""} |> Repo.insert!()
       catelog = Catelog.build_child_of(parent, %{name: "Top.Science"})
 
       assert catelog.path == parent.id
     end
 
     test "builds a child of the root" do
-      parent = %Catelog{name: "Top", path: nil} |> Repo.insert!
+      parent = %Catelog{name: "Top", path: nil} |> Repo.insert!()
       catelog = Catelog.build_child_of(parent, %{name: "Top.Science"})
 
       assert catelog.path == parent.id
     end
 
     test "builds a root" do
-      catelog = Catelog.build_child_of(nil, %{name: "Top.Science"})
+      catelog = Catelog.build(%{name: "Top.Science"})
 
       assert catelog.path == ""
     end

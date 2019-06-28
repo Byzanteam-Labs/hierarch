@@ -12,6 +12,7 @@ defmodule Hierarch.Ecto.UUIDLTree do
   def cast(label) when is_binary(label) do
     {:ok, to_human(label)}
   end
+
   def cast(_), do: :error
 
   @doc """
@@ -20,6 +21,7 @@ defmodule Hierarch.Ecto.UUIDLTree do
   def dump(label) when is_binary(label) do
     {:ok, to_db(label)}
   end
+
   def dump(_), do: :error
 
   @doc """
@@ -28,6 +30,7 @@ defmodule Hierarch.Ecto.UUIDLTree do
   def load(label) when is_binary(label) do
     {:ok, to_human(label)}
   end
+
   def load(_), do: {:ok, ""}
 
   defp to_human(value) do
