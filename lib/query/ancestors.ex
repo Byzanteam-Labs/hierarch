@@ -67,16 +67,15 @@ defmodule Hierarch.Query.Ancestors do
   |> Repo.all
   """
   def query(%schema{} = struct, opts \\ []) do
-    with_self = Keyword.get(opts, :with_self, false)
-
     path = Hierarch.Util.struct_path(struct)
 
     [{pk_column, value}] = Ecto.primary_key(struct)
 
     ancestor_ids =
-      case with_self do
-        true -> Hierarch.LTree.split(path) ++ [value]
-        _ -> Hierarch.LTree.split(path)
+      if Keyword.get(opts, :with_self, false) do
+        Hierarch.LTree.split(path) ++ [value]
+      else
+        Hierarch.LTree.split(path)
       end
 
     from(

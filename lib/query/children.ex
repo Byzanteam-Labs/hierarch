@@ -67,23 +67,27 @@ defmodule Hierarch.Query.Children do
   ```
   """
   def query(%schema{} = struct, opts \\ []) do
-    with_self = Keyword.get(opts, :with_self, false)
+    children_condition = children_condition(struct)
 
+    if Keyword.get(opts, :with_self, false) do
+      from schema, where: ^children_condition, or_where: ^including_self_condition(struct)
+    else
+      from schema, where: ^children_condition
+    end
+  end
+
+  defp children_condition(%schema{} = struct) do
     path = Hierarch.Util.struct_path(struct)
-
-    [{pk_column, value}] = Ecto.primary_key(struct)
+    [{_pk_column, value}] = Ecto.primary_key(struct)
 
     children_path = Hierarch.LTree.concat(path, value)
 
-    children_query =
-      from(
-        t in schema,
-        where: field(t, ^schema.__hierarch__(:path_column)) == ^children_path
-      )
+    dynamic([q], field(q, ^schema.__hierarch__(:path_column)) == ^children_path)
+  end
 
-    case with_self do
-      true -> children_query |> or_where([t], field(t, ^pk_column) == ^value)
-      _ -> children_query
-    end
+  defp including_self_condition(%_schema{} = struct) do
+    [{pk_column, value}] = Ecto.primary_key(struct)
+
+    dynamic([q], field(q, ^pk_column) == ^value)
   end
 end
