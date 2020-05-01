@@ -32,8 +32,8 @@ defmodule Hierarch.MixProject do
 
   defp deps do
     [
-      {:ecto, "~> 3.0"},
-      {:ecto_sql, "~> 3.0"},
+      {:ecto, "~> 3.4"},
+      {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.13.0"},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
