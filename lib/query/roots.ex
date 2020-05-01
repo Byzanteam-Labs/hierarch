@@ -7,7 +7,7 @@ defmodule Hierarch.Query.Roots do
   Return query expressions for roots
   """
   def query(schema) do
-    condition= roots_condition(schema)
+    condition = roots_condition(schema)
 
     from schema, where: ^condition
   end
