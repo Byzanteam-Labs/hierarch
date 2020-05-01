@@ -252,8 +252,13 @@ Catelog.roots() |> Repo.all
 ## Contributing
 First, set appropriate settings for test database.
 ```shell
-export POSTGRES_USER=test_username POSTGRES_PASSWORD=test_password MIX_ENV=test
+export POSTGRES_USER=postgres POSTGRES_PASSWORD=postgres MIX_ENV=test
+
+docker-compose up
+
+mix do ecto.create, ecto.migrate
 ```
+
 run test.
 ```elixir
 mix test
