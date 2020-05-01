@@ -35,7 +35,6 @@ defmodule Hierarch.MixProject do
       {:ecto, "~> 3.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.13.0"},
-      {:junit_formatter, ">= 0.0.0", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
