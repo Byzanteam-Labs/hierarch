@@ -2,7 +2,7 @@ defmodule Hierarch.MixProject do
   use Mix.Project
 
   @project_url "https://github.com/Byzanteam-Labs/hierarch"
-  @version "0.2.0"
+  @version "0.2.1"
 
   def project do
     [
