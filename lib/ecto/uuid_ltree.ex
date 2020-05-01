@@ -1,5 +1,5 @@
 defmodule Hierarch.Ecto.UUIDLTree do
-  @behaviour Ecto.Type
+  use Ecto.Type
 
   @dash "-"
   @underline "_"

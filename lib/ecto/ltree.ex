@@ -1,5 +1,5 @@
 defmodule Hierarch.Ecto.LTree do
-  @behaviour Ecto.Type
+  use Ecto.Type
 
   def type, do: :ltree
 

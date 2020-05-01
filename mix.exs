@@ -8,7 +8,7 @@ defmodule Hierarch.MixProject do
     [
       app: :hierarch,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       source_url: @project_url,
