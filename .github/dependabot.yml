@@ -4,15 +4,8 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 1
   assignees:
   - fahchen
   ignore:
-  - dependency-name: ex_doc
-    versions:
-    - 0.23.0
-    - 0.24.0
-    - 0.24.1
-  - dependency-name: ecto_sql
-    versions:
-    - 3.5.4
+  versioning-stratage: widen
